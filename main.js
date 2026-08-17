@@ -53,7 +53,10 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  mainWindow.webContents.openDevTools();
+  // Open DevTools only in development mode
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }
 }
 
 app.whenReady().then(() => {
