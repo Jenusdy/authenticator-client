@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authenticator Client</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-color); filter: drop-shadow(0 0 4px var(--accent-glow));">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <circle cx="12" cy="11" r="3"></circle>
+            <path d="M12 14v4"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Authenticator Client</h1>
+          <p>Open Source Desktop 2FA</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="backup-btn" class="icon-btn" title="Transfer Accounts">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="16 3 21 8 16 13"></polyline>
+            <line x1="21" y1="8" x2="9" y2="8"></line>
+            <polyline points="8 21 3 16 8 11"></polyline>
+            <line x1="3" y1="16" x2="15" y2="16"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+
+
+    <!-- Search and Filter -->
+    <div class="search-bar">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="search-input" placeholder="Search accounts...">
+      </div>
+      <button id="add-account-btn" class="primary-btn">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        Add
+      </button>
+    </div>
+
+    <!-- Accounts List -->
+    <main class="accounts-container">
+      <div id="no-accounts" class="empty-state">
+        <div class="empty-icon">
+          <svg viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        </div>
+        <h3>No accounts yet</h3>
+        <p>Add a new 2FA token to get started</p>
+        <button id="add-account-empty-btn" class="primary-btn">Add Account</button>
+      </div>
+
+      <div id="accounts-list" class="accounts-list">
+        <!-- Account cards will be dynamically rendered here -->
+      </div>
+    </main>
+
+    <!-- Footer Credit -->
+    <footer class="app-footer" style="text-align: center; padding: 0.85rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); width: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.35rem;">
+      <div>Built with <span style="color: #ef4444;">&hearts;</span> by Jenusdy</div>
+      <a href="https://trakteer.id/jenusdy/tip" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 0.25rem;">
+        ☕ Support Developer on Trakteer
+      </a>
+    </footer>
+
+    <!-- Add/Edit Modal -->
+    <div id="account-modal" class="modal-overlay">
+      <div class="modal-card" style="max-width: 440px;">
+        <div class="modal-header">
+          <h2 id="modal-title">Add Account</h2>
+          <button class="close-btn" id="close-modal-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- 1. Selection View -->
+        <div id="add-options-view" class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;">
+          <button type="button" id="option-camera-btn" class="primary-btn" style="justify-content: flex-start; padding: 1rem; font-size: 1rem; width: 100%; gap: 1rem;">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            Scan QR via Camera
+          </button>
+          <button type="button" id="option-upload-btn" class="primary-btn" style="justify-content: flex-start; padding: 1rem; font-size: 1rem; width: 100%; gap: 1rem;">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+            Upload QR Image
+          </button>
+          <input type="file" id="add-qr-file-input" accept="image/*" style="display: none;">
+          <button type="button" id="option-manual-btn" class="primary-btn" style="justify-content: flex-start; padding: 1rem; font-size: 1rem; width: 100%; gap: 1rem;">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            Manual Entry
+          </button>
+          <div id="add-option-error" class="error-msg" style="text-align: center;"></div>
+        </div>
+
+        <!-- 2. Camera View -->
+        <div id="add-camera-view" class="modal-body" style="display: none; flex-direction: column; align-items: center; gap: 1rem; padding: 1rem;">
+          <p style="font-size: 0.9rem; text-align: center; color: var(--text-muted);">Hold your 2FA QR code in front of the camera.</p>
+          <div class="webcam-container" style="position: relative; width: 100%; max-width: 320px; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background: #000; border: 1.5px solid rgba(255,255,255,0.15);">
+            <video id="webcam-preview" style="width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1);"></video>
+            <div class="scanner-laser" style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow); animation: scanLoop 2.5s infinite linear;"></div>
+          </div>
+          <button type="button" class="secondary-btn" id="camera-back-btn" style="width: 100%;">Back</button>
+        </div>
+
+        <!-- 3. Manual View/Edit Form -->
+        <form id="account-form" class="modal-body" style="display: none;">
+          <input type="hidden" id="account-id">
+          
+          <div class="form-group">
+            <label for="account-issuer">Issuer / Service Name</label>
+            <input type="text" id="account-issuer" placeholder="e.g., Google, GitHub, AWS" required>
+          </div>
+
+          <div class="form-group">
+            <label for="account-name">Account Username / Email</label>
+            <input type="text" id="account-name" placeholder="e.g., user@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="account-secret">Secret Key (Base32)</label>
+            <input type="text" id="account-secret" placeholder="Enter the 2FA secret key" required autocomplete="off">
+            <div id="secret-error" class="error-msg">Invalid Base32 secret key</div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="secondary-btn" id="manual-back-btn">Back</button>
+            <button type="submit" class="primary-btn" id="save-modal-btn">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Backup Modal (Transfer accounts) -->
+    <div id="backup-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Transfer Accounts</h2>
+          <button class="close-btn" id="close-backup-btn">
+            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="backup-section" id="export-section" style="display: flex; flex-direction: column; align-items: center; text-align: center; width: 100%;">
+            <h3>Export Codes</h3>
+            <div id="export-qr-content" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+              <p>Scan this QR code with another authenticator app to transfer your accounts.</p>
+              <div class="qr-display-container" style="background-color: white; padding: 12px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 12px rgba(0,0,0,0.15); margin: 0.75rem 0;">
+                <img id="backup-qr-img" style="width: 200px; height: 200px; display: block;" alt="Export QR Code">
+              </div>
+              <a id="save-qr-btn" download="aegis-transfer-qr.png" class="primary-btn" style="text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Save QR Code Image
+              </a>
+            </div>
+            <div id="export-empty-msg" style="color: var(--text-muted); font-size: 0.9rem; margin: 1.5rem 0; display: none;">No accounts to transfer. Add some accounts first.</div>
+          </div>
+          
+          <div class="backup-section" id="import-section" style="display: flex; flex-direction: column; align-items: center; text-align: center; border-top: 1px solid rgba(42, 56, 92, 0.4); padding-top: 1.5rem; width: 100%;">
+            <h3>Import Codes</h3>
+            <p>Select a previously exported QR code image to transfer your accounts.</p>
+            <button type="button" id="restore-select-btn" class="primary-btn" style="margin: 0.75rem 0;">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Select QR Code Image
+            </button>
+            <input type="file" id="restore-qr-input" accept="image/*" style="display:none">
+            <div id="restore-error" class="error-msg" style="margin-top: 0.5rem;">Failed to import codes from this image.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+      <span id="toast-message">Code copied to clipboard</span>
+    </div>
+  </div>
+
+  <script src="node_modules/otpauth/dist/otpauth.umd.min.js"></script>
+  <script src="node_modules/jsqr/dist/jsQR.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>
