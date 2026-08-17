@@ -6,11 +6,19 @@ const QRCode = require('qrcode');
 
 const ACCOUNTS_FILE = path.join(app.getPath('userData'), 'accounts.json');
 
-function readAccounts() {
+async function readAccounts() {
   try {
-    if (fs.existsSync(ACCOUNTS_FILE)) {
-      const data = fs.readFileSync(ACCOUNTS_FILE, 'utf8');
+    const dir = path.dirname(ACCOUNTS_FILE);
+    await fs.promises.mkdir(dir, { recursive: true });
+    
+    try {
+      const data = await fs.promises.readFile(ACCOUNTS_FILE, 'utf8');
       return JSON.parse(data);
+    } catch (readErr) {
+      if (readErr.code === 'ENOENT') {
+        return [];
+      }
+      throw readErr;
     }
   } catch (err) {
     console.error('Error reading accounts file:', err);
@@ -18,9 +26,11 @@ function readAccounts() {
   return [];
 }
 
-function writeAccounts(accounts) {
+async function writeAccounts(accounts) {
   try {
-    fs.writeFileSync(ACCOUNTS_FILE, JSON.stringify(accounts, null, 2), 'utf8');
+    const dir = path.dirname(ACCOUNTS_FILE);
+    await fs.promises.mkdir(dir, { recursive: true });
+    await fs.promises.writeFile(ACCOUNTS_FILE, JSON.stringify(accounts, null, 2), 'utf8');
     return true;
   } catch (err) {
     console.error('Error writing accounts file:', err);
@@ -56,6 +66,11 @@ function createWindow() {
   // Open DevTools only in development mode
   if (!app.isPackaged) {
     mainWindow.webContents.openDevTools();
+  } else {
+    // Actively prevent DevTools opening via keyboard shortcuts in production
+    mainWindow.webContents.on('devtools-opened', () => {
+      mainWindow.webContents.closeDevTools();
+    });
   }
 }
 
