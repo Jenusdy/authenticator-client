@@ -3,6 +3,10 @@
 
 Authenticator Client is a opensource, secure, and modern offline desktop application for managing Two-Factor Authentication (2FA) tokens (TOTP). Built on Electron with a glassmorphic cyber-themed user interface, it provides a safe desktop alternative to mobile authenticator apps, ensuring your credentials stay 100% offline and under your control.
 
+<p align="center">
+  <img src="screenshot.png" width="380" alt="Authenticator Client Screenshot">
+</p>
+
 ---
 
 ## 🌟 Key Features
