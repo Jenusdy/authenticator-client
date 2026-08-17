@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win"
+    "build": "electron-builder --win",
+    "test": "node --test test/logic.test.js"
   },
   "build": {
     "appId": "com.authenticator.client",

@@ -976,5 +976,19 @@ function generateMigrationUrl(accountsList) {
   return 'otpauth-migration://offline?data=' + encodeURIComponent(base64);
 }
 
-// Run app init
-init();
+// Run app init in browser only
+if (typeof window !== 'undefined' && window.api) {
+  init();
+}
+
+// Export for Node.js unit tests
+if (typeof module !== 'undefined') {
+  module.exports = {
+    validateSecret,
+    base32ToUint8Array,
+    uint8ArrayToBase32,
+    uint8ArrayToBase64,
+    generateMigrationUrl,
+    decodeMigrationUrl
+  };
+}
