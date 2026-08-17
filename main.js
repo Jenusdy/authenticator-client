@@ -45,7 +45,7 @@ function createWindow() {
     backgroundColor: '#0f172a',
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
 
   // Open target="_blank" links in default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {

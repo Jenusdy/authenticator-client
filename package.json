@@ -19,9 +19,7 @@
     "files": [
       "main.js",
       "preload.js",
-      "index.html",
-      "index.css",
-      "renderer.js"
+      "src/**/*"
     ]
   },
   "keywords": [
