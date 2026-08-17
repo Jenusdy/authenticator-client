@@ -51,6 +51,7 @@ function createWindow() {
       nodeIntegration: false
     },
     title: "Authenticator Client",
+    icon: path.join(__dirname, 'assets', 'icon.png'),
     autoHideMenuBar: true,
     backgroundColor: '#0f172a',
   });

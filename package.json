@@ -11,11 +11,12 @@
   "build": {
     "appId": "com.authenticator.client",
     "productName": "Authenticator Client",
+    "icon": "assets/icon.png",
     "directories": {
       "output": "dist"
     },
     "win": {
-      "target": "portable"
+      "target": "nsis"
     },
     "files": [
       "main.js",

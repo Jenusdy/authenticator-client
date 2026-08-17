@@ -75,11 +75,11 @@ Unit tests are written using Node's native test runner (`node:test`) and assert 
 ## 🚀 Building & Packaging
 
 - **Mode Check**: In `main.js`, we inspect `app.isPackaged` to determine if we are in dev or prod mode. DevTools will only open automatically during development (`npm start`).
-- **Create Standalone Portable Binary**:
+- **Create Windows Installer**:
   ```bash
   npm run build
   ```
-  The compiler (`electron-builder`) compiles the project and outputs a portable `.exe` in `dist/`.
+  The compiler (`electron-builder`) compiles the project and outputs an installer `.exe` in `dist/` which installs the application to the Windows Applications menu.
 
 ---
 
