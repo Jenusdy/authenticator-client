@@ -78,6 +78,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  if (process.platform === 'darwin' && app.dock) {
+    app.dock.setIcon(path.join(__dirname, 'assets', 'icon.png'));
+  }
+
   // Allow media (camera) permission requests from the local app renderer
   session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
     if (permission === 'media') {
