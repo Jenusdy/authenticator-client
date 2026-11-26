@@ -1,0 +1,12 @@
+services:
+  authenticator:
+    build: .
+    container_name: authenticator-client
+    ports:
+      - "6080:6080"
+    volumes:
+      - authenticator-data:/root/.config/authenticator-desktop
+    shm_size: "512m"
+
+volumes:
+  authenticator-data:

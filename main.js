@@ -64,9 +64,11 @@ function createWindow() {
     return { action: 'deny' };
   });
 
-  // Open DevTools only in development mode
+  // Open DevTools only when explicitly requested in development mode
   if (!app.isPackaged) {
-    mainWindow.webContents.openDevTools();
+    if (process.env.OPEN_DEVTOOLS === '1') {
+      mainWindow.webContents.openDevTools();
+    }
   } else {
     // Actively prevent DevTools opening via keyboard shortcuts in production
     mainWindow.webContents.on('devtools-opened', () => {
