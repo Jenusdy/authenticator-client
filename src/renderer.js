@@ -291,17 +291,36 @@ function stopWebcam() {
 async function startWebcam() {
   addOptionError.textContent = "";
   try {
-    webcamStream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } }
-    });
+    if (window.api && typeof window.api.requestCameraPermission === 'function') {
+      const perm = await window.api.requestCameraPermission();
+      if (!perm.granted) {
+        addOptionError.textContent = "Camera access is denied. Allow camera access in System Settings > Privacy & Security > Camera.";
+        addCameraView.style.display = 'none';
+        addOptionsView.style.display = 'flex';
+        return;
+      }
+    }
+
+    try {
+      webcamStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 640 }, height: { ideal: 480 } }
+      });
+    } catch (constraintErr) {
+      if (constraintErr.name === 'OverconstrainedError') {
+        webcamStream = await navigator.mediaDevices.getUserMedia({ video: true });
+      } else {
+        throw constraintErr;
+      }
+    }
+
     webcamPreview.srcObject = webcamStream;
     webcamPreview.setAttribute("playsinline", true);
-    webcamPreview.play();
+    await webcamPreview.play();
     
     webcamAnimationId = requestAnimationFrame(scanWebcamFrame);
   } catch (err) {
     console.error("Camera access error:", err);
-    addOptionError.textContent = "Error accessing camera. Make sure webcam is connected and allowed.";
+    addOptionError.textContent = `Error accessing camera (${err.name || 'Error'}). Make sure webcam is connected and allowed.`;
     addCameraView.style.display = 'none';
     addOptionsView.style.display = 'flex';
   }

@@ -4,5 +4,6 @@ contextBridge.exposeInMainWorld('api', {
   getAccounts: () => ipcRenderer.invoke('get-accounts'),
   saveAccounts: (accounts) => ipcRenderer.invoke('save-accounts', accounts),
   copyToClipboard: (text) => ipcRenderer.send('write-clipboard', text),
-  generateQRCode: (text) => ipcRenderer.invoke('generate-qr', text)
+  generateQRCode: (text) => ipcRenderer.invoke('generate-qr', text),
+  requestCameraPermission: () => ipcRenderer.invoke('request-camera-permission')
 });

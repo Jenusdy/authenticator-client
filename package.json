@@ -34,7 +34,10 @@
           ]
         }
       ],
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "extendInfo": {
+        "NSCameraUsageDescription": "Authenticator Client needs camera access to scan 2FA QR codes."
+      }
     },
     "files": [
       "main.js",

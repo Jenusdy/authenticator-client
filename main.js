@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, clipboard } = require('electron');
+const { app, BrowserWindow, ipcMain, clipboard, systemPreferences, session } = require('electron');
 const path = require('node:path');
 const fs = require('node:fs');
 
@@ -78,7 +78,30 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // Allow media (camera) permission requests from the local app renderer
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    if (permission === 'media') {
+      return callback(true);
+    }
+    callback(false);
+  });
+
   // IPC Handlers
+  ipcMain.handle('request-camera-permission', async () => {
+    if (process.platform !== 'darwin') {
+      return { granted: true, status: 'granted' };
+    }
+    const status = systemPreferences.getMediaAccessStatus('camera');
+    if (status === 'granted') {
+      return { granted: true, status };
+    }
+    if (status === 'not-determined') {
+      const granted = await systemPreferences.askForMediaAccess('camera');
+      return { granted, status: granted ? 'granted' : 'denied' };
+    }
+    return { granted: false, status };
+  });
+
   ipcMain.handle('get-accounts', () => {
     return readAccounts();
   });
